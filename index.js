@@ -327,6 +327,14 @@ OKCoin.prototype.cancelWithdraw = function cancelWithdraw(callback, symbol, with
     }, callback);
 };
 
+OKCoin.prototype.getOrderFee = function getOrderFee(callback, symbol, order_id)
+{
+    this.privateRequest('order_fee', {
+        symbol: symbol,
+        order_id: order_id
+    }, callback);
+};
+
 /**
  * Maps the OKCoin error codes to error message
  * @param  {Integer}  error_code   OKCoin error code
