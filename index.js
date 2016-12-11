@@ -1,6 +1,7 @@
 var util = require('util'),
     _ = require('underscore'),
-    request	= require('request'),
+    hyperquest  = require('hyperquest'),
+    hypersponse = require('hypersponse'),
     crypto = require('crypto'),
     VError = require('verror'),
     md5 = require('MD5');
@@ -133,7 +134,7 @@ function executeRequest(options, requestDesc, callback)
 {
     var functionName = 'OKCoin.executeRequest()';
 
-    request(options, function(err, response, data)
+    hypersponse(hyperquest(options.url, options), function(err, response, data)
     {
         var error = null,   // default to no errors
             returnObject = data;
@@ -149,7 +150,7 @@ function executeRequest(options, requestDesc, callback)
                 response.statusCode, requestDesc);
             error.name = response.statusCode;
         }
-        else if (options.form)
+        else
         {
             try {
                 returnObject = JSON.parse(data);
@@ -157,11 +158,6 @@ function executeRequest(options, requestDesc, callback)
             catch(e) {
                 error = new VError(e, 'Could not parse response from server: ' + data);
             }
-        }
-        // if json request was not able to parse json response into an object
-        else if (options.json && !_.isObject(data) )
-        {
-            error = new VError('%s could not parse response from %s\nResponse: %s', functionName, requestDesc, data);
         }
 
         if (_.has(returnObject, 'error_code'))
